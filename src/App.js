@@ -1,24 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+ import './App.css';
+import axios from 'axios';
+import { useState } from 'react';
 
 function App() {
+  const [data, setData] = useState("")
+  const [result, setResult] = useState("")
+  const handleInput = (event)=>{
+    setData(event.target.value);
+  }
+
+
+  const sendData = async (event)=>{
+    event.preventDefault();
+    try {
+      const response = await axios.post('https://nc-lang-compiler.herokuapp.com/',{
+        code:data
+      })
+      
+      setResult(response.data.result);
+    } catch (error) {
+      if(error.response){
+
+        setResult(error.response.data.result);
+      }
+
+    }
+
+    
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <form onSubmit={sendData} className="App">
+        <textarea onChange={handleInput}>
+          
+        </textarea>
+        <button type="submit">Send</button>
+      </form>
+      <pre>{result}</pre>  
+    </>
   );
 }
 
